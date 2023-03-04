@@ -1,0 +1,3 @@
+((d, w) => {
+  
+})(document, window);

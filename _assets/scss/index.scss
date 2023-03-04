@@ -1,0 +1,11 @@
+@charset "UTF-8";
+
+// 色などの変数読み込み
+@use "setting/setting";
+@use "setting/normalize";
+
+// 変数・ミックスイン
+@use "mixin/mixin";
+
+//ページスタイル
+@use './style';

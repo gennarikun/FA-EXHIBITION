@@ -1,0 +1,36 @@
+@use '../setting/setting' as s;
+@use "sass:math";
+
+// メディアクエリ
+@mixin pc {
+  @media only screen and (min-width: #{s.$bp-pc}) {
+    @content;
+  }
+}
+
+@mixin sp {
+  @media only screen and (max-width: #{s.$bp-sp}) {
+    @content;
+  }
+}
+
+// デバイス毎に表示をコントロールするクラス
+.mod-displayNone_mobile {
+  @include sp {
+    display: none !important;
+  }
+}
+
+.mod-displayNone_desktop {
+  @include pc {
+    display: none !important;
+  }
+}
+
+@function getSize( $size , $width: #{s.$bp-pc} ) {
+  @return #{ $size / $width * 100 } + 'vw';
+}
+
+@function lh($tracking, $fontsize) {
+  @return math.div($tracking, $fontsize);
+}
