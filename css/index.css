@@ -544,7 +544,7 @@ body {
   opacity: 0;
   -webkit-transition: opacity 0.5s linear;
   transition: opacity 0.5s linear;
-  background-image: url(../img/background.jpg);
+  background-image: url(../img/background-min.jpg);
   background-repeat: no-repeat;
   background-size: cover;
 }
