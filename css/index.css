@@ -689,6 +689,7 @@ body {
   background-color: #050507;
   -webkit-transition: right 0.3s ease-in-out;
   transition: right 0.3s ease-in-out;
+  z-index: 1;
 }
 .following_list.is-showFollowing {
   right: 0;
