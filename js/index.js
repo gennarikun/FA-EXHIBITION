@@ -4,15 +4,10 @@
   */
   const header = d.querySelector('.js-header');
   w.addEventListener('scroll', () => {
-    const scrollY = pageYOffset;
-    if (scrollY > 520) {
-      header.classList.add('is-showHeader');
-    } else {
-      header.classList.remove('is-showHeader');
-    }
+    header.classList.toggle('is-showHeader', w.scrollY > 520);
   });
   /**
-    クリックでメニューの表示・非表示
+    クリックでメニュー表示・非表示
   */
   const menu = d.querySelector('.js-menu');
   const menuIcon = d.querySelector('.js-menu_icon');
@@ -21,69 +16,47 @@
   });
   /**
     スクロールで追従ボタンの表示・非表示
-    ※pcサイズのみ適応
+    追従ボタンはpc幅のみ表示
   */
   const isDesktop = matchMedia('(min-width: 900px)');
   const following = d.querySelector('.js-following');
-  w.addEventListener('resize', () => {
-    if (isDesktop.matches) {
-      following.classList.add('is-showFollowing');
-    } else {
-      following.classList.remove('is-showFollowing');
-    }
-  });
+  const gallery = d.querySelector('.js-gallery');
+  const access = d.querySelector('.js-access');
   w.addEventListener('scroll', () => {
     if (isDesktop.matches) {
-      // 対象要素の画面トップからの距離を取得
-      const gallery = d.querySelector('.js-gallery').getBoundingClientRect().top;
-      const access = d.querySelector('.js-access').getBoundingClientRect().top;
-      // 画面トップから対象要素までの距離が、画面の高さより小さくなったら実行
-      if (gallery <= w.innerHeight) {
+      if (gallery.getBoundingClientRect().top <= w.innerHeight && w.innerHeight <= access.getBoundingClientRect().top) {
         following.classList.add('is-showFollowing');
       } else {
         following.classList.remove('is-showFollowing');
       }
-      if (access <= w.innerHeight) {
-        following.classList.remove('is-showFollowing');
-      }
     }
   });
-  /**
-    キービジュアルの拡大・縮小
-  */
-  let mainVisual = d.querySelectorAll('.js-mainVisual');
+  // リサイズでsp幅にした場合は追従ボタンを非表示
   w.addEventListener('resize', () => {
-    if (isDesktop.matches) {
-      for (let i = 0; i < mainVisual.length; i++) {
-        //現在のスクロール位置を取得して、10で除算
-        let scrollY = w.scrollY / 10;
-        //取得したスクロールの値と画像幅を加算して、メインビジュアルのwidthに設定
-        mainVisual[i].style.width = 33.3333 + scrollY + '%';
-      }
+    if (!isDesktop.matches || isDesktop.matches && w.innerHeight <= gallery.getBoundingClientRect().top || isDesktop.matches && access.getBoundingClientRect().top <= w.innerHeight) {
+      following.classList.remove('is-showFollowing');
     } else {
-      for (let i = 0; i < mainVisual.length; i++) {
-        let scrollY = w.scrollY / 12.2;
-        //取得したスクロールの値と画像幅を減算して、メインビジュアルのwidthに設定
-        mainVisual[i].style.width = 100 - scrollY + '%';
-      }
+      following.classList.add('is-showFollowing');
     }
   });
-  w.addEventListener('scroll', () => {
-    if (isDesktop.matches) {
-      for (let i = 0; i < mainVisual.length; i++) {
-        //現在のスクロール位置を取得して、10で除算
-        let scrollY = w.scrollY / 10;
-        //取得したスクロールの値と画像幅を加算して、メインビジュアルのwidthに設定
-        mainVisual[i].style.width = 33.3333 + scrollY + '%';
-      }
-    } else {
-      for (let i = 0; i < mainVisual.length; i++) {
-        let scrollY = w.scrollY / 12.2;
-        //取得したスクロールの値と画像幅を減算して、メインビジュアルのwidthに設定
-        mainVisual[i].style.width = 100 - scrollY + '%';
-      }
-    }
-  });
+
+  /**
+    スクロール時のメインジュアル要素幅の処理
+    pcは拡大、spは縮小させる
+  */
+  'resize scroll'.split(' ').forEach((eventName) => {
+    w.addEventListener(eventName, () => {
+      const mainVisual = d.querySelectorAll('.js-mainVisual');
+      // 画面幅によって値の変更
+      const value = isDesktop.matches ? 10 : 12.2;
+      // 要素幅の計算用関数
+      const widthCalc = isDesktop.matches ? (scrollY) => 33.3333 + scrollY + '%' : (scrollY) => 100 - scrollY + '%';
+      // 各メインビジュアルに要素幅を代入
+      mainVisual.forEach((e) => {
+        e.style.width = widthCalc(w.scrollY / value);
+      });
+    })
+  })
   /**
     フェードイン
   */
@@ -107,14 +80,11 @@
     // 対象要素の画面トップからの距離を取得
     const access = d.querySelector('.js-access').getBoundingClientRect().top;
     const contact = d.querySelector('.js-contact').getBoundingClientRect().top;
-    // 画面トップから対象要素までの距離が、画面の高さより小さくなったら実行
-    if (access <= w.innerHeight) {
-      background.classList.add('is-showbackground');
+    // 画面トップからの距離が、対象要素の間の場合は実行
+    if (w.innerHeight <= access || contact <= w.innerHeight) {
+      background.classList.remove('is-showbackground');
     } else {
-      background.classList.remove('is-showbackground');
-    }
-    if (contact <= w.innerHeight) {
-      background.classList.remove('is-showbackground');
+      background.classList.add('is-showbackground');
     }
     });
 })(document, window);
